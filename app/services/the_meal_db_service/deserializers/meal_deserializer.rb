@@ -3,9 +3,11 @@ module TheMealDbService
     module MealDeserializer
       extend Deserializers::Base
 
-      def self.call(object)
+      def self.call(object, collection: true)
+        raise Errors::NotFoundError.new("Meal not found.") if collection && object.meals.nil?
+
         if object.meals.present?
-          object.meals.map { |x| call(x) }
+          object.meals.map { |x| call(x, collection: false) }
         else
           ::Meal.new(
             id: object.idMeal,
