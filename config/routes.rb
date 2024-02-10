@@ -9,5 +9,7 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   namespace :v1 do
+    resources :meals
+    resources :categories
   end
 end
