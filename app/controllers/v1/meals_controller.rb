@@ -1,7 +1,7 @@
 module V1
   class MealsController < ApplicationController
     def index
-      meals = TheMealDbService::Meal.find_by_category(permitted_params[:category])
+      meals = TheMealDbService::Meal.find_by_category(permitted_params[:filter][:category])
       fields = { fields: { meal: [:name, :thumb_url] } }
       render json: MealSerializer.new(meals, fields).serializable_hash.to_json, status: :ok
     end
@@ -14,7 +14,7 @@ module V1
     private 
 
     def permitted_params
-      params.permit(:id, :category)
+      params.permit(:id, filter: [:category])
     end
   end
 end
