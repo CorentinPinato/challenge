@@ -1,0 +1,175 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/v1/categories":
+    get:
+      summary: Lists categories
+      tags:
+      - Posts
+      responses:
+        '200':
+          description: successful
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/category"
+  "/v1/meals":
+    parameters:
+    - name: filter[category]
+      in: query
+      description: filter
+      schema:
+        type: string
+    get:
+      summary: Filter meals by category
+      tags:
+      - Meals
+      responses:
+        '200':
+          description: successful
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/meal"
+  "/v1/meals/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieve a meal
+      tags:
+      - Meals
+      responses:
+        '200':
+          description: successful
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/meal"
+        '404':
+          description: failed
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/not_found_error"
+servers:
+- url: "{defaultHost}"
+  variables:
+    defaultHost:
+      default: http://localhost:3000
+components:
+  schemas:
+    category:
+      type: object
+      properties:
+        type:
+          type: string
+          example: category
+        id:
+          type: string
+          example: '1'
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Beef
+            thumb_url:
+              type: string
+              example: https://www.themealdb.com/images/category/beef.png
+            description:
+              type: string
+              example: Beef is the culinary name for meat from cattle...
+    meal:
+      type: object
+      properties:
+        type:
+          type: string
+          example: meal
+        id:
+          type: string
+          example: '52874'
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Beef and Mustard Pie
+            drink_alternate:
+              type: string
+              nullable: true
+            category:
+              type: string
+              example: Beef
+            area:
+              type: string
+              example: British
+            instructions:
+              type: string
+              example: Preheat the oven to 150C/300F/Gas 2...
+            thumb_url:
+              type: string
+              example: https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg
+            tags:
+              type: array
+              items:
+                type: string
+                example: Meat
+            youtube_url:
+              type: string
+              example: https://www.youtube.com/watch?v=nMyBC9staMU
+            ingredients:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: Beef
+                  measure:
+                    type: string
+                    example: 1kg
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: http://localhost:3000/v1/meals/52874
+    not_found_error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            title:
+              type: string
+              example: Not Found.
+            detail:
+              type: string
+              example: Meal not found.
